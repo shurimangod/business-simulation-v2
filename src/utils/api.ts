@@ -4,7 +4,7 @@ import {useMutation, UseMutationResult } from 'react-query';
 import { FormData, MonthlySales } from '../interfaces/interfaces';
 
 // Define your API endpoints
-const API_ENDPOINT = 'http://127.0.0.1:8000/';
+const API_ENDPOINT = 'https://fastapi-simulation-franchise.vercel.app/';
 
 
 interface MonthlySalesArr extends Array<MonthlySales>{}
