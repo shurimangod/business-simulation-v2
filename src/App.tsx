@@ -67,7 +67,7 @@ function App() {
       drop_rate: 0.04,
       marketing_cost: 5000000,
       mep: 3000000,
-      new_st: 7,
+      new_st: 10,
       off_facility: 50000000,
       off_renov: 20000000,
       ruko_rent: 80000000,

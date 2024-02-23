@@ -100,7 +100,7 @@ const InitialInvestmentForm: React.FC<Props> = ({
                           sx={{
                             marginLeft: 1,
                           }}
-                          description="Harga sewa ruko per tahun"
+                          description="Meja, kursi, AC, interior"
                         />
                       </Box>
                     }
@@ -130,7 +130,7 @@ const InitialInvestmentForm: React.FC<Props> = ({
                           sx={{
                             marginLeft: 1,
                           }}
-                          description="Harga sewa ruko per tahun"
+                          description="Instalasi partisi, cat, renovasi ruko"
                         />
                       </Box>
                     }
@@ -155,12 +155,12 @@ const InitialInvestmentForm: React.FC<Props> = ({
                     InputLabelProps={{ style: { pointerEvents: "auto" } }}
                     label={
                       <Box sx={{ display: "flex", alignItems: "center" }}>
-                        <>Electrical, Water and Internet (MEP)</>
+                        <>Electrical, Water and Internet</>
                         <IconWithTooltip
                           sx={{
                             marginLeft: 1,
                           }}
-                          description="Harga sewa ruko per tahun"
+                          description="Biaya instalasi listrik, internet"
                         />
                       </Box>
                     }
@@ -190,7 +190,7 @@ const InitialInvestmentForm: React.FC<Props> = ({
                           sx={{
                             marginLeft: 1,
                           }}
-                          description="Harga sewa ruko per tahun"
+                          description="Alat dan media belajar seperti laptop, robot, VR Box, etc"
                         />
                       </Box>
                     }
@@ -268,7 +268,7 @@ const InitialInvestmentForm: React.FC<Props> = ({
                           sx={{
                             marginLeft: 1,
                           }}
-                          description="Harga sewa ruko per tahun"
+                          description="Biaya yang dikeluarkan untuk 1 sesi belajar (gaji teacher)"
                         />
                       </Box>
                     }
@@ -298,7 +298,7 @@ const InitialInvestmentForm: React.FC<Props> = ({
                           sx={{
                             marginLeft: 1,
                           }}
-                          description="Harga sewa ruko per tahun"
+                          description="Biaya Class Kit / Registrasi setiap level"
                         />
                       </Box>
                     }
@@ -328,7 +328,7 @@ const InitialInvestmentForm: React.FC<Props> = ({
                           sx={{
                             marginLeft: 1,
                           }}
-                          description="Harga sewa ruko per tahun"
+                          description="Biaya bulanan listrik dan internet"
                         />
                       </Box>
                     }
@@ -371,12 +371,12 @@ const InitialInvestmentForm: React.FC<Props> = ({
                     InputLabelProps={{ style: { pointerEvents: "auto" } }}
                     label={
                       <Box sx={{ display: "flex", alignItems: "center" }}>
-                        <>Admin Salary</>
+                        <>Admin Marketing Salary</>
                         <IconWithTooltip
                           sx={{
                             marginLeft: 1,
                           }}
-                          description="Harga sewa ruko per tahun"
+                          description="Gaji staff admin marketing"
                         />
                       </Box>
                     }
@@ -405,7 +405,7 @@ const InitialInvestmentForm: React.FC<Props> = ({
                           sx={{
                             marginLeft: 1,
                           }}
-                          description="Harga sewa ruko per tahun"
+                          description="Biaya marketing per bulan"
                         />
                       </Box>
                     }
@@ -452,7 +452,7 @@ const InitialInvestmentForm: React.FC<Props> = ({
                           sx={{
                             marginLeft: 1,
                           }}
-                          description="Harga sewa ruko per tahun"
+                          description="Siswa baru per bulannya"
                         />
                       </Box>
                     }
@@ -481,7 +481,7 @@ const InitialInvestmentForm: React.FC<Props> = ({
                           sx={{
                             marginLeft: 1,
                           }}
-                          description="Harga sewa ruko per tahun"
+                          description="Harga kelas 4x pertemuan/bulan"
                         />
                       </Box>
                     }
@@ -510,7 +510,7 @@ const InitialInvestmentForm: React.FC<Props> = ({
                           sx={{
                             marginLeft: 1,
                           }}
-                          description="Harga sewa ruko per tahun"
+                          description="Harga Class Kit / Registrasi awal level"
                         />
                       </Box>
                     }
