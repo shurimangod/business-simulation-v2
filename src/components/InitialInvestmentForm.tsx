@@ -7,12 +7,15 @@ import {
   Typography,
   Grid,
   Box,
+  Switch,
+  FormControlLabel,
 } from "@mui/material";
 import { NumericFormat } from "react-number-format";
 import IconWithTooltip from "./IconWithTooltip";
 import { FormData } from "../interfaces/interfaces";
 import AccordionMenu from "./AccordionMenu";
 import { Memory } from "@mui/icons-material";
+import { useState } from "react";
 
 interface Props {
   formData: FormData;
@@ -25,6 +28,7 @@ const InitialInvestmentForm: React.FC<Props> = ({
   onFormChange,
   onFormSubmit,
 }) => {
+  // const [isVp,setisVp]=useState<boolean>(false);
   // Function to handle form submission
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
@@ -37,8 +41,15 @@ const InitialInvestmentForm: React.FC<Props> = ({
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
     console.log(event.target.name, event.target.value);
-    onFormChange(name, value);
+    if (name == "is_vp") {
+      onFormChange(name, event.target.checked);
+    } else {
+      onFormChange(name, value);
+    }
   };
+  // const handleChangeVpFc = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   onToggleChange(event.target.checked);
+  // };
 
   return (
     <Container component="main" maxWidth="xs">
@@ -59,6 +70,23 @@ const InitialInvestmentForm: React.FC<Props> = ({
               }
             >
               <Grid container spacing={2} sx={{ paddingTop: 1 }}>
+                <Grid item xs={12}>
+                  <FormControlLabel
+                    control={
+                      <Switch
+                        color="primary"
+                        checked={formData.is_vp}
+                        onChange={(event) =>
+                          onFormChange(event.target.name, event.target.checked)
+                        }
+                        inputProps={{ "aria-label": "controlled" }}
+                        name="is_vp"
+                      />
+                    }
+                    label={formData.is_vp ? "Venue Partner" : "Franchise"}
+                    labelPlacement="start"
+                  />
+                </Grid>
                 <Grid item xs={6}>
                   <NumericFormat
                     prefix="Rp."
@@ -195,6 +223,7 @@ const InitialInvestmentForm: React.FC<Props> = ({
                       </Box>
                     }
                     name="t_material"
+                    // disabled={formData.is_vp}
                     customInput={TextField}
                     thousandSeparator="."
                     decimalScale={0}
@@ -225,6 +254,7 @@ const InitialInvestmentForm: React.FC<Props> = ({
                       </Box>
                     }
                     name="license_fee"
+                    disabled={formData.is_vp}
                     customInput={TextField}
                     thousandSeparator="."
                     decimalScale={0}

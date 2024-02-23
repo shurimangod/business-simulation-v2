@@ -24,6 +24,8 @@ export interface ProfitResponses {
   gross_profit: number;
   ord_income: number;
   cum_profit:number;
+  partner_profit:number;
+  partner_cum_profit:number;
 }
 export interface FormData {
   ruko_rent: number | null;
@@ -41,6 +43,7 @@ export interface FormData {
   marketing_cost: number | null;
   mep_monthly: number | null;
   license_fee:number | null;
+  is_vp:boolean|undefined;
 }
 export interface MonthlySales {
   month: number;

@@ -12,6 +12,7 @@ interface MonthlySalesArr extends Array<MonthlySales>{}
 // Define types for your API responses and request data
 interface MonthlySalesApiResponse {
   // Your API response structure
+    is_vp:boolean,
     monthly_sales:MonthlySalesArr,
     total_expenses:number,
     total_investment:number

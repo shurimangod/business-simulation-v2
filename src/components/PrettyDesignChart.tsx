@@ -8,7 +8,7 @@ interface ChartProps {
   data: MonthlySales[];
 }
 
-const PrettyDesignChart: React.FC<ChartProps> = ({ data }) => {
+const PrettyDesignChart: React.FC<ChartProps> = ({ data,is_vp }) => {
   console.log(data);
   const options: ApexCharts.ApexOptions = {
     chart: {
@@ -70,31 +70,60 @@ const PrettyDesignChart: React.FC<ChartProps> = ({ data }) => {
         // <span>
         // ${w.config.xaxis.categories[dataPointIndex]}
         // </span>
-        return `<div class="custom-tooltip">
-        <div>
-        <span class="title">${Constant.ACTIVE_STUDENTS}:</span>
-        <span>${data[dataPointIndex].active_st} siswa</span>
-      </div>
+        if (!is_vp){
+          return `<div class="custom-tooltip">
           <div>
-            <span class="title">${Constant.TOTAL_SALES}:</span>
-            <span>${formatRupiah(data[dataPointIndex].total_sales)}</span>
-          </div>
+          <span class="title">${Constant.ACTIVE_STUDENTS}:</span>
+          <span>${data[dataPointIndex].active_st} siswa</span>
+        </div>
+            <div>
+              <span class="title">${Constant.TOTAL_SALES}:</span>
+              <span>${formatRupiah(data[dataPointIndex].total_sales)}</span>
+            </div>
+            <div>
+            <span class="title">${Constant.TOTAL_EXPENSES}:</span>
+            <span>${formatRupiah(
+              data[dataPointIndex].cog.total_cog +
+                data[dataPointIndex].sga.total_sga
+            )}</span>
+            </div>
+            <div>
+            <span class="title">${Constant.TOTAL_PROFIT}:</span>
+            <span>${formatRupiah(data[dataPointIndex].profit.ord_income)}</span>
+            </div>
+            <div>
+            <span class="title">${Constant.TOTAL_CUMPROFIT}:</span>
+            <span>${formatRupiah(data[dataPointIndex].profit.cum_profit)}</span>
+            </div>
+            </div>`;
+        }else{
+          return `<div class="custom-tooltip">
           <div>
-          <span class="title">${Constant.TOTAL_EXPENSES}:</span>
-          <span>${formatRupiah(
-            data[dataPointIndex].cog.total_cog +
-              data[dataPointIndex].sga.total_sga
-          )}</span>
-          </div>
-          <div>
-          <span class="title">${Constant.TOTAL_PROFIT}:</span>
-          <span>${formatRupiah(data[dataPointIndex].profit.ord_income)}</span>
-          </div>
-          <div>
-          <span class="title">${Constant.TOTAL_CUMPROFIT}:</span>
-          <span>${formatRupiah(data[dataPointIndex].profit.cum_profit)}</span>
-          </div>
-          </div>`;
+          <span class="title">${Constant.ACTIVE_STUDENTS}:</span>
+          <span>${data[dataPointIndex].active_st} siswa</span>
+        </div>
+            <div>
+              <span class="title">${Constant.TOTAL_SALES}:</span>
+              <span>${formatRupiah(data[dataPointIndex].total_sales)}</span>
+            </div>
+            <div>
+            <span class="title">${Constant.TOTAL_EXPENSES}:</span>
+            <span>${formatRupiah(
+              data[dataPointIndex].cog.total_cog +
+                data[dataPointIndex].sga.total_sga
+            )}</span>
+            </div>
+            <div>
+            <span class="title">${Constant.TOTAL_PARTNER_PROFIT}:</span>
+            <span>${formatRupiah(data[dataPointIndex].profit.partner_profit)}</span>
+            </div>
+            <div>
+            <span class="title">${Constant.TOTAL_PARTNER_CUMPROFIT}:</span>
+            <span>${formatRupiah(data[dataPointIndex].profit.partner_cum_profit)}</span>
+            </div>
+            </div>`;
+        }
+
       },
     },
     legend: {

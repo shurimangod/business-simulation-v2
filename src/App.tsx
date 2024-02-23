@@ -7,7 +7,12 @@ import InitialInvestmentForm from "./components/InitialInvestmentForm";
 import PrettyDesignChart from "./components/PrettyDesignChart";
 import { FormData, MonthlySales } from "./interfaces/interfaces";
 import { usePostData } from "./utils/api";
-import { ArrowBack, Checklist, AssignmentReturn,LocalAtm } from "@mui/icons-material";
+import {
+  ArrowBack,
+  Checklist,
+  AssignmentReturn,
+  LocalAtm,
+} from "@mui/icons-material";
 import formatRupiah from "./utils/helper";
 import Main from "./components/Main";
 import ListMenu from "./components/ListMenu";
@@ -17,10 +22,10 @@ function App() {
   const postDataMutation = usePostData();
   // State to store form data
   const [chartData, setChartData] = useState<MonthlySales[]>([]);
-  const [total_investment,setTotalInvestment]=useState<number>(0);
-  const [total_expenses,setTotalExpenses]=useState<number>(0);
-  const [total_revenue,setTotalRevenue]=useState<number>(0);
-  const [total_cumprofit,setTotalCumProfit]=useState<number>(0);
+  const [total_investment, setTotalInvestment] = useState<number>(0);
+  const [total_expenses, setTotalExpenses] = useState<number>(0);
+  const [total_revenue, setTotalRevenue] = useState<number>(0);
+  const [total_cumprofit, setTotalCumProfit] = useState<number>(0);
   const [formData, setFormData] = useState<{
     ruko_rent: null | number;
     mep: null | number;
@@ -35,8 +40,9 @@ function App() {
     drop_rate: null | number;
     admin_cost: null | number;
     marketing_cost: null | number;
-    mep_monthly:null| number;
-    license_fee:null|number;
+    mep_monthly: null | number;
+    license_fee: null | number;
+    is_vp: undefined | boolean;
   }>({
     ruko_rent: null,
     mep: null,
@@ -51,8 +57,9 @@ function App() {
     drop_rate: 0.04,
     admin_cost: null,
     marketing_cost: null,
-    mep_monthly:null,
-    license_fee:50000000,
+    mep_monthly: null,
+    license_fee: 50000000,
+    is_vp: false,
   });
 
   const [drawer, setToggleDrawer] = useState({
@@ -73,8 +80,9 @@ function App() {
       ruko_rent: 80000000,
       t_material: 50000000,
       teaching_cost: 100000,
-      mep_monthly:1200000,
-      license_fee:100000000
+      mep_monthly: 1200000,
+      license_fee: formData.is_vp ? 0 : 100000000,
+      is_vp: formData.is_vp,
     });
     // Add your logic here
   };
@@ -104,6 +112,19 @@ function App() {
 
   // Function to handle form data changes
   const handleFormChange = (name: string, value: string) => {
+    if (name == "is_vp") {
+      if (value) {
+        setFormData((prevData) => ({
+          ...prevData,
+          license_fee: 0,
+        }));
+      } else {
+        setFormData((prevData) => ({
+          ...prevData,
+          license_fee: 50000000,
+        }));
+      }
+    }
     console.log(name, value);
     setFormData((prevData) => ({
       ...prevData,
@@ -125,10 +146,10 @@ function App() {
       const result = await postDataMutation.mutateAsync(formData);
       // console.log(result.monthly_sales)
       setChartData(() => result.monthly_sales);
-      setTotalExpenses(()=>result.total_expenses);
-      setTotalCumProfit(()=>result.monthly_sales[59].profit.cum_profit);
-      setTotalInvestment(()=>result.total_investment);
-      setTotalRevenue(()=>result.total_revenue)
+      setTotalExpenses(() => result.total_expenses);
+      setTotalCumProfit(() => result.monthly_sales[59].profit.cum_profit);
+      setTotalInvestment(() => result.total_investment);
+      setTotalRevenue(() => result.total_revenue);
       // Assuming your API response structure has a 'data' property
       // if (postDataMutation.isSuccess) {
       //   console.log([postDataMutation.data]);
@@ -204,7 +225,7 @@ function App() {
                 <Grid item xs={4}>
                   <OverviewCard
                     title={"Total Initial Investment"}
-                    icon={<LocalAtm/>}
+                    icon={<LocalAtm />}
                     sx={{ height: "100%" }}
                     value={formatRupiah(total_investment)}
                   />
@@ -212,19 +233,31 @@ function App() {
                 <Grid item xs={4}>
                   <OverviewCard
                     title={"Total Revenue in 5Y"}
-                    icon={<LocalAtm/>}
+                    icon={<LocalAtm />}
                     sx={{ height: "100%" }}
                     value={formatRupiah(total_revenue)}
                   />
                 </Grid>
-                <Grid item xs={4}>
-                  <OverviewCard
-                    title={"Total Profit in 5Y"}
-                    icon={<LocalAtm/>}
-                    sx={{ height: "100%" }}
-                    value={formatRupiah(total_cumprofit)}
-                  />
-                </Grid>
+                {!formData.is_vp ? (
+                  <Grid item xs={4}>
+                    <OverviewCard
+                      title={"Total Profit in 5Y"}
+                      icon={<LocalAtm />}
+                      sx={{ height: "100%" }}
+                      value={formatRupiah(total_cumprofit)}
+                    />
+                  </Grid>
+                ) : (
+                  <Grid item xs={4}>
+                    <OverviewCard
+                      title={"Total Profit in 5Y"}
+                      icon={<LocalAtm />}
+                      sx={{ height: "100%" }}
+                      value={formatRupiah(chartData[59].profit.partner_cum_profit)}
+                    />
+                  </Grid>
+                )}
+
                 <Grid item xs={12}>
                   <PrettyDesignChart data={chartData} />
                   <Box></Box>
