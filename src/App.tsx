@@ -65,7 +65,7 @@ function App() {
       ckit_price: 300000,
       class_price: 500000,
       drop_rate: 0.04,
-      marketing_cost: 5000000,
+      marketing_cost: 7500000,
       mep: 3000000,
       new_st: 10,
       off_facility: 50000000,
@@ -74,7 +74,7 @@ function App() {
       t_material: 50000000,
       teaching_cost: 100000,
       mep_monthly:1200000,
-      license_fee:50000000
+      license_fee:100000000
     });
     // Add your logic here
   };
