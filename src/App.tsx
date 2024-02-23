@@ -20,6 +20,7 @@ function App() {
   const [total_investment,setTotalInvestment]=useState<number>(0);
   const [total_expenses,setTotalExpenses]=useState<number>(0);
   const [total_revenue,setTotalRevenue]=useState<number>(0);
+  const [total_cumprofit,setTotalCumProfit]=useState<number>(0);
   const [formData, setFormData] = useState<{
     ruko_rent: null | number;
     mep: null | number;
@@ -125,6 +126,7 @@ function App() {
       // console.log(result.monthly_sales)
       setChartData(() => result.monthly_sales);
       setTotalExpenses(()=>result.total_expenses);
+      setTotalCumProfit(()=>result.monthly_sales[59].profit.cum_profit);
       setTotalInvestment(()=>result.total_investment);
       setTotalRevenue(()=>result.total_revenue)
       // Assuming your API response structure has a 'data' property
@@ -217,10 +219,10 @@ function App() {
                 </Grid>
                 <Grid item xs={4}>
                   <OverviewCard
-                    title={"Total Expenses in 5Y"}
+                    title={"Total Profit in 5Y"}
                     icon={<LocalAtm/>}
                     sx={{ height: "100%" }}
-                    value={formatRupiah(total_expenses)}
+                    value={formatRupiah(total_cumprofit)}
                   />
                 </Grid>
                 <Grid item xs={12}>
