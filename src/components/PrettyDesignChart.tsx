@@ -6,6 +6,7 @@ import { MonthlySales } from "../interfaces/interfaces";
 import formatRupiah from "../utils/helper";
 interface ChartProps {
   data: MonthlySales[];
+  is_vp:boolean | undefined;
 }
 
 const PrettyDesignChart: React.FC<ChartProps> = ({ data,is_vp }) => {

@@ -259,7 +259,7 @@ function App() {
                 )}
 
                 <Grid item xs={12}>
-                  <PrettyDesignChart data={chartData} />
+                  <PrettyDesignChart data={chartData} is_vp={formData.is_vp} />
                   <Box></Box>
                 </Grid>
               </Grid>
