@@ -73,6 +73,11 @@ let replacements = [
     to: "Profit",
     data_type: "currency",
   },
+  {
+    from: "total_vp_sga",
+    to: "SGA Expenses for Venue Partner",
+    data_type: "currency",
+  },
 
 
   // { from: "cog", data_type: "object" }
@@ -187,7 +192,7 @@ const SimulationDetailsTable: React.FC<TableProps> = ({
 }) => {
   let columnExclude;
   if(investment_type=='vp'){
-    columnExclude = ["month", "c_price", "ckit_price",'c_sales','ckit_sales','mep_cost','class_sess_num','total_trial_teach_cost','total_reg_teach_cost','total_ck_cost','admin_cost','bm_cost','marketing_cost','others_cost','ruko_rent','fixed_asset_cost','ruko_rent','additional_rennovation','gross_profit','total_vp_sga',];
+    columnExclude = ["month", "c_price", "ckit_price",'c_sales','ckit_sales','mep_cost','class_sess_num','total_trial_teach_cost','total_reg_teach_cost','total_ck_cost','admin_cost','bm_cost','marketing_cost','others_cost','ruko_rent','fixed_asset_cost','ruko_rent','additional_rennovation','gross_profit',];
   }else if(investment_type=='fc'){
     columnExclude = ["month", "c_price", "ckit_price",'c_sales','ckit_sales','mep_cost','class_sess_num','total_trial_teach_cost','total_reg_teach_cost','total_ck_cost','admin_cost','bm_cost','marketing_cost','others_cost','ruko_rent','fixed_asset_cost','ruko_rent','additional_rennovation','gross_profit','total_vp_sga','partner_profit','partner_cum_profit'];
   }
