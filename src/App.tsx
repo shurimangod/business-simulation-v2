@@ -12,12 +12,17 @@ import {
   Checklist,
   AssignmentReturn,
   LocalAtm,
+  ToggleButton,
+  ToggleButtonGroup,
 } from "@mui/icons-material";
 import formatRupiah from "./utils/helper";
 import Main from "./components/Main";
 import ListMenu from "./components/ListMenu";
+import ProfitChart from "./components/ProfitChart";
+import CumulativeProfitChart from "./components/CumulativeProfitChart";
+import SimulationDetailsTable from "./components/SimulationDetailsTable";
 
-const drawerWidth = 480;
+const drawerWidth = 600;
 function App() {
   const postDataMutation = usePostData();
   // State to store form data
@@ -42,7 +47,10 @@ function App() {
     marketing_cost: null | number;
     mep_monthly: null | number;
     license_fee: null | number;
-    is_vp: undefined | boolean;
+    investment_type: null | string;
+    max_st: null | number;
+    others_cost: null | number;
+    // is_vp: undefined | boolean;
   }>({
     ruko_rent: null,
     mep: null,
@@ -54,12 +62,15 @@ function App() {
     new_st: null,
     class_price: null,
     ckit_price: null,
-    drop_rate: 0.04,
+    drop_rate: 0.03,
     admin_cost: null,
     marketing_cost: null,
     mep_monthly: null,
     license_fee: 50000000,
-    is_vp: false,
+    investment_type: "fc",
+    max_st: null,
+    others_cost: null,
+    // is_vp: false,
   });
 
   const [drawer, setToggleDrawer] = useState({
@@ -68,21 +79,24 @@ function App() {
   const handleGenerateExampleClick = () => {
     setFormData({
       admin_cost: 4000000,
-      ck_cost: 120000,
+      ck_cost: 100000,
       ckit_price: 300000,
-      class_price: 500000,
-      drop_rate: 0.04,
+      class_price: 525000,
+      drop_rate: 0.03,
       marketing_cost: 7500000,
       mep: 3000000,
-      new_st: 10,
+      new_st: 12,
       off_facility: 50000000,
-      off_renov: 20000000,
+      off_renov: 30000000,
       ruko_rent: 80000000,
-      t_material: 50000000,
-      teaching_cost: 100000,
+      t_material: 70000000,
+      teaching_cost: 75000,
       mep_monthly: 1200000,
-      license_fee: formData.is_vp ? 0 : 100000000,
-      is_vp: formData.is_vp,
+      license_fee: formData.investment_type != "fc" ? 0 : 100000000,
+      // is_vp: formData.is_vp,
+      investment_type: "fc",
+      max_st: 200,
+      others_cost: 1500000,
     });
     // Add your logic here
   };
@@ -147,7 +161,7 @@ function App() {
       // console.log(result.monthly_sales)
       setChartData(() => result.monthly_sales);
       setTotalExpenses(() => result.total_expenses);
-      setTotalCumProfit(() => result.monthly_sales[59].profit.cum_profit);
+      setTotalCumProfit(() => result.total_cum_profit);
       setTotalInvestment(() => result.total_investment);
       setTotalRevenue(() => result.total_revenue);
       // Assuming your API response structure has a 'data' property
@@ -160,11 +174,26 @@ function App() {
   };
 
   useEffect(() => {
-    const chart = ApexCharts.getChartByID("cumulativeChart");
+    const chart = ApexCharts.getChartByID("cumulativeProfitChart");
+    const chart2 = ApexCharts.getChartByID("profitChart");
     if (chart) {
       chart.windowResizeHandler();
     }
+    if (chart2) {
+      chart2.windowResizeHandler();
+    }
   }, [drawer.bottom]);
+
+  const [seriesVisibility, setSeriesVisibility] = useState<boolean[]>([
+    true,
+    true,
+  ]); // Initial visibility state
+
+  const toggleSeries = (seriesIndex: number) => {
+    const newVisibility = [...seriesVisibility];
+    newVisibility[seriesIndex] = !newVisibility[seriesIndex];
+    setSeriesVisibility(newVisibility);
+  };
 
   return (
     <>
@@ -238,29 +267,28 @@ function App() {
                     value={formatRupiah(total_revenue)}
                   />
                 </Grid>
-                {!formData.is_vp ? (
-                  <Grid item xs={4}>
-                    <OverviewCard
-                      title={"Total Profit in 5Y"}
-                      icon={<LocalAtm />}
-                      sx={{ height: "100%" }}
-                      value={formatRupiah(total_cumprofit)}
-                    />
-                  </Grid>
-                ) : (
-                  <Grid item xs={4}>
-                    <OverviewCard
-                      title={"Total Profit in 5Y"}
-                      icon={<LocalAtm />}
-                      sx={{ height: "100%" }}
-                      value={formatRupiah(chartData[59].profit.partner_cum_profit)}
-                    />
-                  </Grid>
-                )}
-
+                <Grid item xs={4}>
+                  <OverviewCard
+                    title={"Total Profit in 5Y"}
+                    icon={<LocalAtm />}
+                    sx={{ height: "100%" }}
+                    value={formatRupiah(total_cumprofit)}
+                  />
+                </Grid>
                 <Grid item xs={12}>
-                  <PrettyDesignChart data={chartData} is_vp={formData.is_vp} />
-                  <Box></Box>
+                  <ProfitChart
+                    data={chartData}
+                    investment_type={formData.investment_type}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <CumulativeProfitChart
+                    data={chartData}
+                    investment_type={formData.investment_type}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <SimulationDetailsTable data={chartData} investment_type={formData.investment_type} />
                 </Grid>
               </Grid>
             )}

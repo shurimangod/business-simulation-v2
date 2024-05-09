@@ -9,13 +9,16 @@ import {
   Box,
   Switch,
   FormControlLabel,
+  ToggleButton,
+  ToggleButtonGroup,
 } from "@mui/material";
 import { NumericFormat } from "react-number-format";
 import IconWithTooltip from "./IconWithTooltip";
 import { FormData } from "../interfaces/interfaces";
 import AccordionMenu from "./AccordionMenu";
 import { Memory } from "@mui/icons-material";
-import { useState } from "react";
+// import { useState } from "react";
+// import * as React from 'react';
 
 interface Props {
   formData: FormData;
@@ -37,16 +40,23 @@ const InitialInvestmentForm: React.FC<Props> = ({
     onFormSubmit(formData);
   };
 
-  // Function to handle input changes
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = event.target;
-    console.log(event.target.name, event.target.value);
-    if (name == "is_vp") {
-      onFormChange(name, event.target.checked);
-    } else {
-      onFormChange(name, value);
-    }
+  const handleChange = (
+    event: React.MouseEvent<HTMLElement>,
+    investment_type: string
+  ) => {
+    onFormChange(event.target.name, investment_type);
   };
+
+  // Function to handle input changes
+  // const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   const { name, value } = event.target;
+  //   console.log(event.target.name, event.target.value);
+  //   if (name == "is_vp") {
+  //     onFormChange(name, event.target.checked);
+  //   } else {
+  //     onFormChange(name, value);
+  //   }
+  // };
   // const handleChangeVpFc = (event: React.ChangeEvent<HTMLInputElement>) => {
   //   onToggleChange(event.target.checked);
   // };
@@ -55,6 +65,25 @@ const InitialInvestmentForm: React.FC<Props> = ({
     <Container component="main" maxWidth="xs">
       <form onSubmit={handleSubmit}>
         <Grid container spacing={2}>
+          <Grid item xs={12}>
+            <ToggleButtonGroup
+              color="primary"
+              value={formData.investment_type}
+              exclusive
+              onChange={handleChange}
+              aria-label="Platform"
+            >
+              <ToggleButton name="investment_type" value="fc">
+                Franchise
+              </ToggleButton>
+              <ToggleButton name="investment_type" value="vp">
+                Venue Partnership
+              </ToggleButton>
+              <ToggleButton name="investment_type" value="crf">
+                Crowdfunding
+              </ToggleButton>
+            </ToggleButtonGroup>
+          </Grid>
           <Grid item xs={12}>
             <AccordionMenu
               title={
@@ -70,7 +99,7 @@ const InitialInvestmentForm: React.FC<Props> = ({
               }
             >
               <Grid container spacing={2} sx={{ paddingTop: 1 }}>
-                <Grid item xs={12}>
+                {/* <Grid item xs={12}>
                   <FormControlLabel
                     control={
                       <Switch
@@ -86,7 +115,7 @@ const InitialInvestmentForm: React.FC<Props> = ({
                     label={formData.is_vp ? "Venue Partner" : "Franchise"}
                     labelPlacement="start"
                   />
-                </Grid>
+                </Grid> */}
                 <Grid item xs={6}>
                   <NumericFormat
                     prefix="Rp."
@@ -223,7 +252,7 @@ const InitialInvestmentForm: React.FC<Props> = ({
                       </Box>
                     }
                     name="t_material"
-                    // disabled={formData.is_vp}
+                    // disabled={formData.investment_type!='fc'}
                     customInput={TextField}
                     thousandSeparator="."
                     decimalScale={0}
@@ -254,7 +283,7 @@ const InitialInvestmentForm: React.FC<Props> = ({
                       </Box>
                     }
                     name="license_fee"
-                    disabled={formData.is_vp}
+                    disabled={formData.investment_type != "fc"}
                     customInput={TextField}
                     thousandSeparator="."
                     decimalScale={0}
@@ -401,7 +430,7 @@ const InitialInvestmentForm: React.FC<Props> = ({
                     InputLabelProps={{ style: { pointerEvents: "auto" } }}
                     label={
                       <Box sx={{ display: "flex", alignItems: "center" }}>
-                        <>Admin Marketing Salary</>
+                        <>Admin Salary</>
                         <IconWithTooltip
                           sx={{
                             marginLeft: 1,
@@ -453,6 +482,35 @@ const InitialInvestmentForm: React.FC<Props> = ({
                     variant="outlined"
                   />
                 </Grid>
+                <Grid item xs={6}>
+                  <NumericFormat
+                    prefix="Rp."
+                    InputLabelProps={{ style: { pointerEvents: "auto" } }}
+                    label={
+                      <Box sx={{ display: "flex", alignItems: "center" }}>
+                        <>Others Cost </>
+                        <IconWithTooltip
+                          sx={{
+                            marginLeft: 1,
+                          }}
+                          description="Biaya operasional lainnya"
+                        />
+                      </Box>
+                    }
+                    name="others_cost"
+                    customInput={TextField}
+                    thousandSeparator="."
+                    decimalScale={0}
+                    allowLeadingZeros={false}
+                    decimalSeparator=","
+                    onValueChange={(values, sourceInfo) =>
+                      onFormChange(sourceInfo.event?.target.name, values.value)
+                    }
+                    value={formData.others_cost}
+                    // you can define additional custom props that are all forwarded to the customInput e. g.
+                    variant="outlined"
+                  />
+                </Grid>
               </Grid>
             </AccordionMenu>
           </Grid>
@@ -496,6 +554,35 @@ const InitialInvestmentForm: React.FC<Props> = ({
                       onFormChange(sourceInfo.event?.target.name, values.value)
                     }
                     value={formData.new_st}
+                    // you can define additional custom props that are all forwarded to the customInput e. g.
+                    variant="outlined"
+                  />
+                </Grid>
+                <Grid item xs={6}>
+                  <NumericFormat
+                    suffix=" siswa"
+                    InputLabelProps={{ style: { pointerEvents: "auto" } }}
+                    label={
+                      <Box sx={{ display: "flex", alignItems: "center" }}>
+                        <>Max Student Capacity</>
+                        <IconWithTooltip
+                          sx={{
+                            marginLeft: 1,
+                          }}
+                          description="Jumlah maksimal siswa aktif"
+                        />
+                      </Box>
+                    }
+                    name="max_st"
+                    customInput={TextField}
+                    thousandSeparator="."
+                    decimalScale={0}
+                    allowLeadingZeros={false}
+                    decimalSeparator=","
+                    onValueChange={(values, sourceInfo) =>
+                      onFormChange(sourceInfo.event?.target.name, values.value)
+                    }
+                    value={formData.max_st}
                     // you can define additional custom props that are all forwarded to the customInput e. g.
                     variant="outlined"
                   />
@@ -570,7 +657,6 @@ const InitialInvestmentForm: React.FC<Props> = ({
               startIcon={<Memory sx={{ color: "primary.white" }}></Memory>}
               size="large"
               variant="contained"
-              color="primary"
               fullWidth
             >
               <Typography sx={{ fontWeight: "bold", color: "primary.white" }}>

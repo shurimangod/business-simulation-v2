@@ -11,27 +11,25 @@ interface Props {
   children: ReactNode;
 }
 
-
 const CustomThemeProvider: React.FC<Props> = ({ children }) => {
-  
   const memoizedValue = useMemo(
     () => ({
       palette: {
         primary: {
           main: "#10AF13",
-          gray:"#353535",
-          white:"#FFFFFF"
+          gray: "#353535",
+          white: "#FFFFFF",
         },
-        accent:{
-          vividNavy:"#1C2F70",
-          ocean:"#43C4FF",
-          sunglow:"#FFD43C",
-          blush:"#1C2F70"
+        accent: {
+          vividNavy: "#1C2F70",
+          ocean: "#43C4FF",
+          sunglow: "#FFD43C",
+          blush: "#1C2F70",
         },
         text: {
           primary: "#000000",
           secondary: "#FFFFFF",
-          jet:"#353535"
+          jet: "#353535",
         },
       },
       typography: {
@@ -40,6 +38,7 @@ const CustomThemeProvider: React.FC<Props> = ({ children }) => {
         fontWeightLight: 300,
         fontWeightRegular: 400,
         fontWeightMedium: 500,
+        fontWeightBold:700,
       },
       shape: { borderRadius: 8 },
       components: {
@@ -65,18 +64,28 @@ const CustomThemeProvider: React.FC<Props> = ({ children }) => {
           },
         },
         MuiIconButton: {
-          styleOverrides:{
+          styleOverrides: {
             root: ({ theme }) =>
-            theme.unstable_sx({
-              backgroundColor:theme.palette.primary.main,
-              color:theme.palette.text.secondary,
-              '&:hover': {
-                backgroundColor: theme.palette.accent.vividNavy,
-                transition: 'background-color 0.3s',
-              }
-            }),
-          }
-        }
+              theme.unstable_sx({
+                backgroundColor: theme.palette.primary.main,
+                color: theme.palette.text.secondary,
+                "&:hover": {
+                  backgroundColor: theme.palette.accent.vividNavy,
+                  transition: "background-color 0.3s",
+                },
+              }),
+          },
+        },
+        MuiToggleButton: {
+          styleOverrides: {
+            root: ({ theme }) =>
+              theme.unstable_sx({
+                "&.Mui-selected, &.Mui-selected:hover": {
+                  fontWeight:theme.typography.fontWeightBold
+                },
+              }),
+          },
+        },
       },
     }),
     []
@@ -84,7 +93,7 @@ const CustomThemeProvider: React.FC<Props> = ({ children }) => {
 
   const theme = createTheme(memoizedValue);
 
-//   theme.components = overrides(theme);
+  //   theme.components = overrides(theme);
 
   return (
     <MUIThemeProvider theme={theme}>

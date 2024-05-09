@@ -1,6 +1,7 @@
 export interface COGResponses {
   class_sess_num: number;
-  total_teach_cost: number;
+  total_reg_teach_cost: number;
+  total_trial_teach_cost:number;
   total_ck_cost: number;
   mep_cost: number;
   royalty_cost: number;
@@ -11,6 +12,7 @@ export interface SGAResponses {
   bm_cost: number;
   marketing_cost: number;
   others_cost: number;
+  fixed_asset_cost:number;
   total_sga: number;
 }
 export interface InitInvestResponses {
@@ -43,7 +45,9 @@ export interface FormData {
   marketing_cost: number | null;
   mep_monthly: number | null;
   license_fee:number | null;
-  is_vp:boolean|undefined;
+  // is_vp:boolean|undefined;
+  investment_type:string | null;
+  others_cost: number | null;
 }
 export interface MonthlySales {
   month: number;

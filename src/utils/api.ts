@@ -5,6 +5,7 @@ import { FormData, MonthlySales } from '../interfaces/interfaces';
 
 // Define your API endpoints
 const API_ENDPOINT = 'https://fastapi-simulation-franchise.vercel.app/';
+// const API_ENDPOINT = 'http://127.0.0.1:8000/';
 
 
 interface MonthlySalesArr extends Array<MonthlySales>{}
@@ -17,6 +18,7 @@ interface MonthlySalesApiResponse {
     total_expenses:number,
     total_investment:number
     total_revenue:number
+    total_cum_profit:number
 }
 
 interface ApiError {

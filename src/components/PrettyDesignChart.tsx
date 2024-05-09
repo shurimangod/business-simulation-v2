@@ -1,15 +1,15 @@
-import { Typography } from "@mui/material";
-import React from "react";
+import { Typography, ToggleButton, ToggleButtonGroup } from "@mui/material";
+import React, { useState } from "react";
 import Chart from "react-apexcharts";
 import Constant from "../utils/const_label";
 import { MonthlySales } from "../interfaces/interfaces";
 import formatRupiah from "../utils/helper";
 interface ChartProps {
   data: MonthlySales[];
-  is_vp:boolean | undefined;
+  investment_type: string | null;
 }
 
-const PrettyDesignChart: React.FC<ChartProps> = ({ data,is_vp }) => {
+const PrettyDesignChart: React.FC<ChartProps> = ({ data, investment_type }) => {
   console.log(data);
   const options: ApexCharts.ApexOptions = {
     chart: {
@@ -17,19 +17,10 @@ const PrettyDesignChart: React.FC<ChartProps> = ({ data,is_vp }) => {
       toolbar: {
         show: false,
       },
+      stacked: true,
     },
+    // colors: ["#92cad1", "#e9724d"],
     // colors: ["#5A67D8"],
-    colors: [
-      function ({ value, seriesIndex, w }) {
-        // console.log("tes bar")
-        // console.log(value)
-        if (value < 0) {
-          return "#FF0000";
-        } else {
-          return "#10AF13";
-        }
-      },
-    ],
     dataLabels: {
       enabled: false,
     },
@@ -41,6 +32,27 @@ const PrettyDesignChart: React.FC<ChartProps> = ({ data,is_vp }) => {
         borderRadiusApplication: "end",
       },
     },
+    series: [
+      {
+        name: "Total Sales",
+        data: data.map((item) => item.profit.cum_profit),
+        // color:"#e9724d"
+      },
+      {
+        name: "Total Profit",
+        data: data.map((item) => item.profit.ord_income),
+        // color:"#92cad1"
+        // colors: [
+        //   function ({ value, seriesIndex, w }) {
+        //     if (value < 0) {
+        //       return "#FF0000";
+        //     } else {
+        //       return "#10AF13";
+        //     }
+        //   },
+        // ],
+      },
+    ],
     xaxis: {
       categories: data.map((item) => `Month ${item.month}`),
       labels: {
@@ -71,7 +83,7 @@ const PrettyDesignChart: React.FC<ChartProps> = ({ data,is_vp }) => {
         // <span>
         // ${w.config.xaxis.categories[dataPointIndex]}
         // </span>
-        if (!is_vp){
+        if (investment_type != "vp") {
           return `<div class="custom-tooltip">
           <div>
           <span class="title">${Constant.ACTIVE_STUDENTS}:</span>
@@ -97,7 +109,7 @@ const PrettyDesignChart: React.FC<ChartProps> = ({ data,is_vp }) => {
             <span>${formatRupiah(data[dataPointIndex].profit.cum_profit)}</span>
             </div>
             </div>`;
-        }else{
+        } else {
           return `<div class="custom-tooltip">
           <div>
           <span class="title">${Constant.ACTIVE_STUDENTS}:</span>
@@ -116,31 +128,67 @@ const PrettyDesignChart: React.FC<ChartProps> = ({ data,is_vp }) => {
             </div>
             <div>
             <span class="title">${Constant.TOTAL_PARTNER_PROFIT}:</span>
-            <span>${formatRupiah(data[dataPointIndex].profit.partner_profit)}</span>
+            <span>${formatRupiah(
+              data[dataPointIndex].profit.partner_profit
+            )}</span>
             </div>
             <div>
             <span class="title">${Constant.TOTAL_PARTNER_CUMPROFIT}:</span>
-            <span>${formatRupiah(data[dataPointIndex].profit.partner_cum_profit)}</span>
+            <span>${formatRupiah(
+              data[dataPointIndex].profit.partner_cum_profit
+            )}</span>
             </div>
             </div>`;
         }
-
       },
     },
     legend: {
       show: false, // Set show to false to hide the legend
     },
   };
+  const [seriesToggle, setSeriesToggle] = useState<string[]>([]); // Initial visibility state
 
-  const series = [
-    {
-      name: "Total Sales",
-      data: data.map((item) => item.profit.cum_profit),
-    },
-  ];
+  const [seriesVisibility, setSeriesVisibility] = useState<boolean[]>([
+    false,
+    false,
+  ]); // Initial visibility state
 
+  const toggleSeries = (seriesIndex: number, visibility: boolean) => {
+    const newVisibility = [...seriesVisibility];
+    newVisibility[seriesIndex] = visibility;
+    setSeriesVisibility(newVisibility);
+  };
+  const handleChange = (
+    event: React.MouseEvent<HTMLElement>,
+    newSelectedOptions: string[]
+  ) => {
+    setSeriesToggle(newSelectedOptions);
+    if (newSelectedOptions.includes("profit")) {
+      toggleSeries(1, true);
+    } else {
+      toggleSeries(1, false);
+    }
+    if (newSelectedOptions.includes("cum_profit")) {
+      toggleSeries(0, true);
+    } else {
+      toggleSeries(0, false);
+    }
+  };
   return (
     <div className="rounded-chart">
+      <ToggleButtonGroup
+        color="primary"
+        value={seriesToggle}
+        onChange={handleChange}
+        aria-label="platform"
+      >
+        <ToggleButton name="investment_type" value="cum_profit">
+          Cumulative Profit (ROI)
+        </ToggleButton>
+        <ToggleButton name="investment_type" value="profit">
+          Profit (BEP)
+        </ToggleButton>
+      </ToggleButtonGroup>
       <Typography
         variant="h5"
         align="left"
@@ -153,7 +201,7 @@ const PrettyDesignChart: React.FC<ChartProps> = ({ data,is_vp }) => {
       </Typography>
       <Chart
         options={options}
-        series={series}
+        series={options.series.filter((_, index) => seriesVisibility[index])}
         type="bar"
         height={350}
         className="apex-chart"
