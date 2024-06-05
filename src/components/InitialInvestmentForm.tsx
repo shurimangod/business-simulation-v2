@@ -79,9 +79,9 @@ const InitialInvestmentForm: React.FC<Props> = ({
               <ToggleButton name="investment_type" value="vp">
                 Venue Partnership
               </ToggleButton>
-              <ToggleButton name="investment_type" value="crf">
+              {/* <ToggleButton name="investment_type" value="crf">
                 Crowdfunding
-              </ToggleButton>
+              </ToggleButton> */}
             </ToggleButtonGroup>
           </Grid>
           <Grid item xs={12}>

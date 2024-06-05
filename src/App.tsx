@@ -111,11 +111,11 @@ function App() {
       icon: <Checklist />,
       onClick: handleGenerateExampleClick,
     },
-    {
-      text: "Export to Doc",
-      icon: <AssignmentReturn />,
-      onClick: handleExportClick,
-    },
+    // {
+    //   text: "Export to Doc",
+    //   icon: <AssignmentReturn />,
+    //   onClick: handleExportClick,
+    // },
   ];
 
   const toggleDrawer = (open: boolean) => () => {
