@@ -77,7 +77,7 @@ function App() {
     bottom: false,
   });
   const handleGenerateExampleClick = () => {
-    setFormData({
+    setFormData((prevData) => ({
       admin_cost: 4000000,
       ck_cost: 100000,
       ckit_price: 300000,
@@ -94,10 +94,10 @@ function App() {
       mep_monthly: 1200000,
       license_fee: formData.investment_type != "fc" ? 0 : 100000000,
       // is_vp: formData.is_vp,
-      investment_type: "fc",
-      max_st: 200,
+      investment_type: prevData.investment_type,
+      max_st: 250,
       others_cost: 1500000,
-    });
+    }));
     // Add your logic here
   };
 
@@ -288,7 +288,10 @@ function App() {
                   />
                 </Grid>
                 <Grid item xs={12}>
-                  <SimulationDetailsTable data={chartData} investment_type={formData.investment_type} />
+                  <SimulationDetailsTable
+                    data={chartData}
+                    investment_type={formData.investment_type}
+                  />
                 </Grid>
               </Grid>
             )}
