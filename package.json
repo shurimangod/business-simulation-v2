@@ -10,21 +10,29 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@david.kucsai/react-pdf-table": "^0.4.1",
     "@emotion/react": "^11.11.3",
     "@emotion/styled": "^11.11.0",
     "@mui/icons-material": "^5.15.7",
     "@mui/material": "^5.15.7",
+    "@react-pdf/renderer": "^3.4.4",
     "apexcharts": "^3.45.2",
     "d3": "^7.8.5",
+    "file-saver": "^2.0.5",
+    "html2canvas": "^1.4.1",
+    "html2pdf": "^0.0.11",
+    "jspdf": "^2.5.1",
     "lodash": "^4.17.21",
     "lodash.merge": "^4.6.2",
     "react": "^18.2.0",
     "react-apexcharts": "^1.4.1",
     "react-dom": "^18.2.0",
     "react-number-format": "^5.3.1",
+    "react-pdf-table": "^1.0.0-alfa.3",
     "react-pro-sidebar": "^1.1.0",
     "react-query": "^3.39.3",
-    "react-router-dom": "^6.22.0"
+    "react-router-dom": "^6.22.0",
+    "react-to-print": "^3.0.2"
   },
   "devDependencies": {
     "@types/react": "^18.2.43",

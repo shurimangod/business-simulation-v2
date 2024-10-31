@@ -8,7 +8,7 @@ import {
   TableBody,
   Paper,
 } from "@mui/material";
-import React from "react";
+import React, {forwardRef,Ref} from "react";
 import Constant from "../utils/const_label";
 import { MonthlySales } from "../interfaces/interfaces";
 import formatRupiah from "../utils/helper";
@@ -156,41 +156,9 @@ function replaceStrings(arr, replacements) {
   });
 }
 
-
-
-// gross_profit:float=0
-// ord_income:float=0
-// cum_profit:float=0
-// partner_profit:float=0
-// partner_cum_profit:float=0
-// class MonthlyCOG(BaseModel):
-//     class_sess_num:int = 0
-//     total_reg_teach_cost:float = 0
-//     total_trial_teach_cost:float=0
-//     total_ck_cost:float = 0
-//     mep_cost:float = 0
-//     royalty_cost:float = 0
-//     total_cog:float=0
-
-// class MonthlySGA(BaseModel):
-//     admin_cost:float = 0
-//     bm_cost:float = 0
-//     marketing_cost:float = 0
-//     others_cost:float=0
-//     fixed_asset_cost:float=0
-//     total_sga:float=0
-//     ruko_rent:float=0
-
-// class VPSGA(BaseModel):
-//     ruko_rent:float=0
-//     additional_rennovation:float=0
-//     total_vp_sga:float=0
-
-const SimulationDetailsTable: React.FC<TableProps> = ({
-  data,
-  investment_type,
-}) => {
-  let columnExclude;
+const SimulationDetailsTable= forwardRef<HTMLTableElement, TableProps>((props, ref) => {
+  const { data, investment_type } = props;
+  let columnExclude: string[] = [];
   if(investment_type=='vp'){
     columnExclude = ["month", "c_price", "ckit_price",'c_sales','ckit_sales','mep_cost','class_sess_num','total_trial_teach_cost','total_reg_teach_cost','total_ck_cost','admin_cost','bm_cost','marketing_cost','others_cost','ruko_rent','fixed_asset_cost','ruko_rent','additional_rennovation','gross_profit','cum_profit','royalty_cost'];
   }else if(investment_type=='fc'){
@@ -206,8 +174,8 @@ const SimulationDetailsTable: React.FC<TableProps> = ({
   //   if(investment_type)
   // });
   return (
-    <TableContainer component={Paper}>
-      <Table>
+    <TableContainer component={Paper}  sx={{ overflowX:"scroll",}}>
+      <Table ref={ref}>
         <TableHead>
           <TableRow>
             <TableCell key={0}>-</TableCell>
@@ -241,6 +209,6 @@ const SimulationDetailsTable: React.FC<TableProps> = ({
       </Table>
     </TableContainer>
   );
-};
+});
 
 export default SimulationDetailsTable;

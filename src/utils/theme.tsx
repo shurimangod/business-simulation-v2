@@ -86,6 +86,42 @@ const CustomThemeProvider: React.FC<Props> = ({ children }) => {
               }),
           },
         },
+        MuiTableRow: {
+          styleOverrides: {
+            root: {
+              '&:nth-of-type(odd)': {
+                backgroundColor: '#ffffff',
+              },
+              '&:nth-of-type(even)': {
+                backgroundColor: '#f5f5f5',
+              },
+            },
+          },
+        },
+        MuiTableCell: {
+          styleOverrides: {
+            head: {
+              backgroundColor: '#10af13',
+              color: '#ffffff',
+              fontWeight: 'bold',
+              textAlign:"center",
+              border: '1px solid #fff',
+            },
+            body: {
+              padding: '16px 16px', // Custom padding for body cells
+              whiteSpace: 'nowrap', // Prevent text wrapping in body cells
+              overflow: 'hidden', // Prevent content overflow
+              textOverflow: 'ellipsis', // Show ellipsis for overflowing content
+              border: '1px solid #ddd',
+            },
+            negative: {
+              color: 'red',
+            },
+            positive: {
+              color: 'green',
+            },
+          },
+        },
       },
     }),
     []

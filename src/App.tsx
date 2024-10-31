@@ -1,10 +1,16 @@
 import "./App.css";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import ButtonAppBar from "./components/AppBar";
-import { Drawer, Box, Grid, IconButton, LinearProgress } from "@mui/material";
+import {
+  Drawer,
+  Box,
+  Grid,
+  IconButton,
+  LinearProgress,
+  Typography,
+} from "@mui/material";
 import OverviewCard from "./components/OverviewCard";
 import InitialInvestmentForm from "./components/InitialInvestmentForm";
-import PrettyDesignChart from "./components/PrettyDesignChart";
 import { FormData, MonthlySales } from "./interfaces/interfaces";
 import { usePostData } from "./utils/api";
 import {
@@ -12,8 +18,6 @@ import {
   Checklist,
   AssignmentReturn,
   LocalAtm,
-  ToggleButton,
-  ToggleButtonGroup,
 } from "@mui/icons-material";
 import formatRupiah from "./utils/helper";
 import Main from "./components/Main";
@@ -21,9 +25,20 @@ import ListMenu from "./components/ListMenu";
 import ProfitChart from "./components/ProfitChart";
 import CumulativeProfitChart from "./components/CumulativeProfitChart";
 import SimulationDetailsTable from "./components/SimulationDetailsTable";
-
+import ExDocument from "./components/ExDocument";
+// import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
+import { pdf } from "@react-pdf/renderer";
+// import { saveAs } from "file-saver";
+// import { Document, Page } from "@react-pdf/renderer";
+import { useReactToPrint } from "react-to-print";
 const drawerWidth = 600;
 function App() {
+  const tableRef = useRef<HTMLDivElement>(null);
+  const cumProfRef = useRef<HTMLDivElement>(null);
+  const newRef = useRef<HTMLDivElement>(null);
+  // const [graphDataUrl, setGraphDataUrl] = useState<string | null>(null);
+
   const postDataMutation = usePostData();
   // State to store form data
   const [chartData, setChartData] = useState<MonthlySales[]>([]);
@@ -31,6 +46,9 @@ function App() {
   const [total_expenses, setTotalExpenses] = useState<number>(0);
   const [total_revenue, setTotalRevenue] = useState<number>(0);
   const [total_cumprofit, setTotalCumProfit] = useState<number>(0);
+  const [isSimulationUpdated, setIsSimulationUpdated] = useState(false);
+  const [printRequested, setPrintRequested] = useState(false);
+
   const [formData, setFormData] = useState<{
     ruko_rent: null | number;
     mep: null | number;
@@ -76,6 +94,46 @@ function App() {
   const [drawer, setToggleDrawer] = useState({
     bottom: false,
   });
+  // const handlePrint = useReactToPrint({
+  //     contentRef:tableRef
+  // });
+
+  const generatePDFLink = async () =>  {
+    if (cumProfRef.current) {
+      console.log("printing v2");
+      const canvas = await html2canvas(cumProfRef.current);
+      const imgData = canvas.toDataURL("image/png");
+      return imgData;
+    }
+    return ""
+  };
+  
+  const downloadPDF = async (graphDataUrl:string) => {
+    if (graphDataUrl) {
+      // Create the PDF document
+      const pdfBlob = await pdf(
+        <ExDocument graphDataUrl={graphDataUrl} investment_type={formData.investment_type} tableData={chartData} />
+      ).toBlob();
+      console.log(pdfBlob)
+      // Create a link element
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(pdfBlob);
+      link.download = "multi-page.pdf"; // Specify the file name
+      link.click(); // Programmatically click the link to trigger the download
+    }
+  };
+
+  const handlePrint = async () => {
+    const graphDataUrl = await generatePDFLink();
+    await downloadPDF(graphDataUrl);
+  };
+  const requestPrint = () => {
+    setPrintRequested(true); // Set print request to true
+  };
+  const toggleDrawer = (open: boolean) => () => {
+    console.log("Tes 1");
+    setToggleDrawer({ bottom: open });
+  };
   const handleGenerateExampleClick = () => {
     setFormData((prevData) => ({
       admin_cost: 4000000,
@@ -100,10 +158,49 @@ function App() {
     }));
     // Add your logic here
   };
+  // const convertToPdf = (ref : HTMLDivElement) => {
+  // 	// const options = {
+  // 	// 	filename: 'my-document.pdf',
+  // 	// 	margin: 1,
+  // 	// 	image: { type: 'jpeg', quality: 0.98 },
+  // 	// 	html2canvas: { scale: 2 },
+  // 	// 	jsPDF: {
+  // 	// 		unit: 'in',
+  // 	// 		format: 'letter',
+  // 	// 		orientation: 'portrait',
+  // 	// 	},
+  // 	// };
 
-  const handleExportClick = () => {
-    console.log("Settings Clicked");
-    // Add your logic here
+  // 	// html2pdf().set(options).from(content).save();
+  //   useReactToPrint({ ref });
+  // };
+
+  const handleExportClick = async () => {
+    // try {
+    // console.log(tableRef.current)
+    setPrintRequested(true);
+    // const fileName = "test.pdf";
+    // const blob = await pdf(
+    //   <Document>
+    //     <Page size="A4">
+    //       <Typography
+    //         variant="h5"
+    //         align="left"
+    //         sx={{
+    //           marginBottom: 2,
+    //           fontWeight: "bold",
+    //         }}
+    //       >
+    //         Profit/Loss Graph
+    //       </Typography>
+    //     </Page>
+    //   </Document>
+    // // ).toBlob();
+    // console.log(blob);
+    // saveAs(blob, fileName);
+    // } catch (error) {
+    //   console.error("Error exporting PDF:", error);
+    // }
   };
   const menuItems = [
     {
@@ -111,18 +208,12 @@ function App() {
       icon: <Checklist />,
       onClick: handleGenerateExampleClick,
     },
-    // {
-    //   text: "Export to Doc",
-    //   icon: <AssignmentReturn />,
-    //   onClick: handleExportClick,
-    // },
+    {
+      text: "Export to PDF",
+      icon: <AssignmentReturn />,
+      onClick: handleExportClick,
+    },
   ];
-
-  const toggleDrawer = (open: boolean) => () => {
-    console.log("Tes 1");
-    setToggleDrawer({ bottom: open });
-    console.log("Tes 2");
-  };
 
   // Function to handle form data changes
   const handleFormChange = (name: string, value: string) => {
@@ -139,7 +230,7 @@ function App() {
         }));
       }
     }
-    console.log(name, value);
+    // console.log(name, value);
     setFormData((prevData) => ({
       ...prevData,
       [name]: value,
@@ -183,6 +274,15 @@ function App() {
       chart2.windowResizeHandler();
     }
   }, [drawer.bottom]);
+
+  useEffect(() => {
+    if (chartData && printRequested) {
+      console.log("pritn claled");
+      handlePrint();
+      console.log(tableRef.current);
+      setPrintRequested(false); // Reset the print request after printing
+    }
+  }, [chartData, printRequested, handlePrint]);
 
   const [seriesVisibility, setSeriesVisibility] = useState<boolean[]>([
     true,
@@ -239,9 +339,21 @@ function App() {
           sx={{
             paddingX: 2,
             paddingY: 4,
+            // overflow:"scroll"
           }}
         >
-          <Grid item xs={12}>
+          {/* <Grid item xs={12} ref={newRef}>
+            <Typography
+              variant="h6"
+              align="left"
+              sx={{
+                fontWeight: "bold",
+              }}
+            >
+              Initial Investment
+            </Typography>
+          </Grid> */}
+          <Grid item xs={12} ref={tableRef}>
             {postDataMutation.isLoading && (
               <Grid container spacing={2}>
                 <Grid item xs={12}>
@@ -285,12 +397,14 @@ function App() {
                   <CumulativeProfitChart
                     data={chartData}
                     investment_type={formData.investment_type}
+                    ref={cumProfRef}
                   />
                 </Grid>
                 <Grid item xs={12}>
                   <SimulationDetailsTable
                     data={chartData}
                     investment_type={formData.investment_type}
+                    // ref={tableRef}
                   />
                 </Grid>
               </Grid>

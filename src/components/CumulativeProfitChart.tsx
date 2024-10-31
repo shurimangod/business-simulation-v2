@@ -1,5 +1,6 @@
 import { Typography } from "@mui/material";
 import React from "react";
+import { forwardRef } from "react";
 import Chart from "react-apexcharts";
 import Constant from "../utils/const_label";
 import { MonthlySales } from "../interfaces/interfaces";
@@ -9,7 +10,7 @@ interface ChartProps {
   investment_type: string | null;
 }
 
-const CumulativeProfitChart: React.FC<ChartProps> = ({ data, investment_type }) => {
+const CumulativeProfitChart= forwardRef<HTMLDivElement, ChartProps>(({data,investment_type}, ref) => {
   const options: ApexCharts.ApexOptions = {
     chart: {
       type: "bar",
@@ -163,7 +164,7 @@ const CumulativeProfitChart: React.FC<ChartProps> = ({ data, investment_type }) 
   // ];
 
   return (
-    <div className="rounded-chart">
+    <div className="rounded-chart" ref={ref}>
       <Typography
         variant="h5"
         align="left"
@@ -184,6 +185,6 @@ const CumulativeProfitChart: React.FC<ChartProps> = ({ data, investment_type }) 
       />
     </div>
   );
-};
+});
 
 export default CumulativeProfitChart;
