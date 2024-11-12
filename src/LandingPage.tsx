@@ -13,22 +13,20 @@ const LandingPage = () => {
   const [password, setPassword] = useState("");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [error, setError] = useState("");
-
+  const validUsername =  import.meta.env.VITE_USERNAME;
+  const validPassword = import.meta.env.VITE_PASSWORD;
   useEffect(() => {
     // Check if username and password are saved in sessionStorage
     const storedUsername = sessionStorage.getItem("username");
     const storedPassword = sessionStorage.getItem("password");
 
     // Replace with your specific credentials
-    if (storedUsername === "admin" && storedPassword === "password123") {
+    if (storedUsername === validUsername && storedPassword === validPassword) {
       setIsAuthenticated(true);
     }
   }, []);
 
-  const handleLogin = () => {
-    const validUsername =  import.meta.env.VITE_USERNAME;
-    const validPassword = import.meta.env.VITE_PASSWORD;
-    
+  const handleLogin = () => {    
     if (username === validUsername && password === validPassword) {
       setIsAuthenticated(true);
       sessionStorage.setItem("username", username);
