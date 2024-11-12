@@ -36,6 +36,7 @@ const drawerWidth = 600;
 function App() {
   const tableRef = useRef<HTMLDivElement>(null);
   const cumProfRef = useRef<HTMLDivElement>(null);
+  const profRef = useRef<HTMLDivElement>(null);
   const newRef = useRef<HTMLDivElement>(null);
   // const [graphDataUrl, setGraphDataUrl] = useState<string | null>(null);
 
@@ -107,12 +108,26 @@ function App() {
     }
     return ""
   };
+
+  const generatePDFLinks = async () => {
+    const imagesData = []; // Array to store the image data
   
-  const downloadPDF = async (graphDataUrl:string) => {
+    for (const ref of [cumProfRef,profRef]) { // Loop through each reference
+      if (ref.current) {
+        console.log("Generating image for element...");
+        const canvas = await html2canvas(ref.current); // Capture the current element
+        const imgData = canvas.toDataURL("image/png"); // Convert to image data
+        imagesData.push(imgData); // Push each image data to the array
+      }
+    }
+    return imagesData; // Return the array of image data
+  };
+  
+  const downloadPDF = async (graphDataUrl:Array<String>) => {
     if (graphDataUrl) {
       // Create the PDF document
       const pdfBlob = await pdf(
-        <ExDocument graphDataUrl={graphDataUrl} investment_type={formData.investment_type} tableData={chartData} />
+        <ExDocument graphDataUrls={graphDataUrl} formData={formData} tableData={chartData} totalInvestment={total_investment}/>
       ).toBlob();
       console.log(pdfBlob)
       // Create a link element
@@ -124,8 +139,8 @@ function App() {
   };
 
   const handlePrint = async () => {
-    const graphDataUrl = await generatePDFLink();
-    await downloadPDF(graphDataUrl);
+    const graphDataUrls = await generatePDFLinks();
+    await downloadPDF(graphDataUrls);
   };
   const requestPrint = () => {
     setPrintRequested(true); // Set print request to true
@@ -391,6 +406,7 @@ function App() {
                   <ProfitChart
                     data={chartData}
                     investment_type={formData.investment_type}
+                    ref={profRef}
                   />
                 </Grid>
                 <Grid item xs={12}>

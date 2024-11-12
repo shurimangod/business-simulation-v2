@@ -4,12 +4,13 @@ import Chart from "react-apexcharts";
 import Constant from "../utils/const_label";
 import { MonthlySales } from "../interfaces/interfaces";
 import formatRupiah from "../utils/helper";
+import { forwardRef } from "react";
 interface ChartProps {
   data: MonthlySales[];
   investment_type: string | null;
 }
 
-const ProfitChart: React.FC<ChartProps> = ({ data, investment_type }) => {
+const ProfitChart=forwardRef<HTMLDivElement, ChartProps>(({data,investment_type}, ref) => {
   // console.log(data);
   const options: ApexCharts.ApexOptions = {
     chart: {
@@ -151,7 +152,7 @@ const ProfitChart: React.FC<ChartProps> = ({ data, investment_type }) => {
   }
 
   return (
-    <div className="rounded-chart">
+    <div className="rounded-chart" ref={ref}>
       <Typography
         variant="h5"
         align="left"
@@ -172,6 +173,6 @@ const ProfitChart: React.FC<ChartProps> = ({ data, investment_type }) => {
       />
     </div>
   );
-};
+});
 
 export default ProfitChart;

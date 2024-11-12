@@ -1,6 +1,8 @@
 // MyDocument.tsx
 import React from "react";
 import imgWmSrc from "../assets/logo_td.png";
+import OpenSansRegular from "../assets/OpenSans-Regular.ttf";
+import OpenSansBold from "../assets/OpenSans-Bold.ttf";
 import {
   Document,
   Page,
@@ -9,25 +11,71 @@ import {
   StyleSheet,
   Image,
   Font,
+  Line,
 } from "@react-pdf/renderer";
-import { MonthlySales } from "../interfaces/interfaces";
+import { MonthlySales, FormData } from "../interfaces/interfaces";
 interface MyDocumentProps {
-  graphDataUrl: string;
+  graphDataUrls: Array<String>;
   tableData: MonthlySales[];
-  investment_type: string | null;
+  formData: FormData;
+  totalInvestment:number;
 }
 import formatRupiah from "../utils/helper";
+import { fontStyle } from "html2canvas/dist/types/css/property-descriptors/font-style";
 Font.registerHyphenationCallback((word) => ["", word, ""]);
+Font.register({
+  family: "OpenSans",
+  fonts: [
+    {
+      src: OpenSansRegular,
+      fontWeight: 400,
+    },
+    {
+      src: OpenSansBold,
+      fontWeight: 700,
+    },
+  ],
+});
 const styles = StyleSheet.create({
   page: {
     flexDirection: "column",
     padding: 20,
     position: "relative",
-    width: '100%', // Ensure it takes full width
-    height: '100%'
+    width: "100%", // Ensure it takes full width
+    height: "100%",
   },
   section: {
     marginBottom: 20,
+  },
+  container: {
+    display: "flex",
+    flexDirection: "row",
+    width: "100%",
+  },
+  flexCol: {
+    display: "flex",
+    flexDirection: "column",
+  },
+  flexRow: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  column: {
+    display: "flex",
+    flexDirection: "row",
+    flexWrap: "wrap",
+    width: "50%", // Each main column takes half of the container
+  },
+  subColumn: {
+    width: "50%", // Each sub-column takes half of the main column
+    padding: 5, // Optional: adds some spacing
+  },
+  summaryText: {
+    fontSize: "16pt",
+  },
+  smallSummaryText: {
+    fontSize: "12pt",
   },
   // tableContainer: {
   //   display: "flex",
@@ -51,6 +99,9 @@ const styles = StyleSheet.create({
     fontWeight: "bold", // Make header text bold
     wordBreak: "break-word" /* Wraps whole words to the next line */,
     overflowWrap: "break-word" /* Adds additional support for word wrapping */,
+    backgroundColor: "#10AF13",
+    fontStyle: "OpenSans",
+    color: "white",
   },
   row: {
     flexDirection: "row",
@@ -68,6 +119,8 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 18,
     marginBottom: 10,
+    textAlign: "center",
+    color: "#10AF13",
   },
   watermark: {
     position: "absolute",
@@ -77,7 +130,7 @@ const styles = StyleSheet.create({
     opacity: 0.2, // Make it semi-transparent
     width: "400px", // Set desired width
     height: "auto",
-    zIndex: 2
+    zIndex: 2,
   },
 });
 function extractNestedProperties(obj) {
@@ -176,7 +229,7 @@ let replacements = [
   },
   {
     from: "total_vp_sga",
-    to: "SGA Expenses for Venue Partner",
+    to: "Venue / Ruko Rent Expenses",
     data_type: "currency",
   },
 
@@ -192,12 +245,13 @@ let replacements = [
   // }
 ];
 const ExDocument: React.FC<MyDocumentProps> = ({
-  graphDataUrl,
+  graphDataUrls,
   tableData,
-  investment_type,
+  formData,
+  totalInvestment
 }) => {
   let columnExclude: string[] = [];
-  if (investment_type == "vp") {
+  if (formData.investment_type == "vp") {
     columnExclude = [
       "month",
       "c_price",
@@ -221,7 +275,7 @@ const ExDocument: React.FC<MyDocumentProps> = ({
       "cum_profit",
       "royalty_cost",
     ];
-  } else if (investment_type == "fc") {
+  } else if (formData.investment_type == "fc") {
     columnExclude = [
       "month",
       "c_price",
@@ -260,17 +314,90 @@ const ExDocument: React.FC<MyDocumentProps> = ({
     <Document>
       {/* Page 1 with the chart */}
       <Page size="A4" style={styles.page}>
-      <Image style={styles.watermark} src={imgWmSrc} />
+        <Image style={styles.watermark} src={imgWmSrc} />
+        <Text style={styles.sectionTitle}>5 Year Simulation Summary</Text>
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Sales Chart</Text>
-          <Image src={graphDataUrl} style={{ width: "100%", height: "auto", position:"relative",zIndex:1 }} />
+          <Text style={{...styles.summaryText, textDecoration:"underline",marginBottom:5}}>Initial Investment</Text>
+          <View
+            style={{
+              ...styles.flexCol,
+              ...styles.smallSummaryText,
+              width: "50%",
+            }}
+          >
+            <View style={styles.flexRow}>
+              <Text>Venue / Ruko Rent</Text>
+              <Text>{formatRupiah(formData.ruko_rent)}</Text>
+            </View>
+            <View style={styles.flexRow}>
+              <Text>Ruko Rennovation</Text>
+              <Text>{formatRupiah(formData.off_renov)}</Text>
+            </View>
+            <View style={styles.flexRow}>
+              <Text>Office Facility</Text>
+              <Text>{formatRupiah(formData.off_facility)}</Text>
+            </View>
+            <View style={styles.flexRow}>
+              <Text>Electrical, Water, Internet</Text>
+              <Text>{formatRupiah(formData.mep)}</Text>
+            </View>
+            <Line></Line>
+            <View style={styles.flexRow}>
+              <Text>Total Investment</Text>
+              <Text>{formatRupiah(totalInvestment)}</Text>
+            </View>
+          </View>
+
+          {/* <View style={styles.smallSummaryText}>
+            <Text>{formatRupiah(formData.ruko_rent)}</Text>
+          </View>
+          <View style={{ ...styles.column, ...styles.smallSummaryText }}>
+            <Text>Office Rennovation</Text>
+          </View> */}
+          {/* <View style={{ ...styles.column, ...styles.smallSummaryText }}>
+            <Text>{formatRupiah(formData.off_renov)}</Text>
+          </View>
+          <View style={styles.container}>
+            <View style={{ ...styles.column, ...styles.smallSummaryText }}>
+              <Text>Office Facility</Text>
+            </View>
+            <View style={{ ...styles.column, ...styles.smallSummaryText }}>
+              <Text>{formatRupiah(formData.off_facility)}</Text>
+            </View>
+            <View style={{ ...styles.column, ...styles.smallSummaryText }}>
+              <Text>Electrical, Water, Internet</Text>
+            </View>
+            <View style={{ ...styles.column, ...styles.smallSummaryText }}>
+              <Text>{formatRupiah(formData.mep)}</Text>
+            </View>
+          </View> */}
+        </View>
+        <View style={styles.section}>
+          <Image
+            src={graphDataUrls[1]}
+            style={{
+              width: "100%",
+              height: "auto",
+              position: "relative",
+              zIndex: 1,
+            }}
+          />
+          <Image
+            src={graphDataUrls[0]}
+            style={{
+              width: "100%",
+              height: "auto",
+              position: "relative",
+              zIndex: 1,
+            }}
+          />
         </View>
       </Page>
       {pages.map((pageData, index) => (
         <Page key={index} style={styles.page} orientation="landscape">
           <Image style={styles.watermark} src={imgWmSrc} />
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Year {index + 1}</Text>
+            <Text style={styles.sectionTitle}>Year-{index + 1} Simulation</Text>
             <View style={styles.table}>
               <View style={styles.row}>
                 <Text style={styles.header}>-</Text>
@@ -304,38 +431,62 @@ const ExDocument: React.FC<MyDocumentProps> = ({
               ))}
             </View>
           </View>
-          <View style={styles.section}></View>
+          <View style={styles.section}>
+            <View style={styles.container}>
+              <View style={styles.column}>
+                <View style={{ ...styles.subColumn, ...styles.summaryText }}>
+                  <Text style={styles.summaryText}>Average Monthly Profit</Text>
+                </View>
+                <View style={{ ...styles.subColumn, ...styles.summaryText }}>
+                  <Text>
+                    {formatRupiah(
+                      pageData
+                        .map((item: any) => item["partner_profit"])
+                        .reduce((acc: number, curr: number) => acc + curr, 0) /
+                        pageData.length
+                    )}
+                  </Text>
+                </View>
+                <View style={{ ...styles.subColumn, ...styles.summaryText }}>
+                  <Text style={styles.summaryText}>
+                    Total Profit in Year-{index + 1}
+                  </Text>
+                </View>
+                <View style={{ ...styles.subColumn, ...styles.summaryText }}>
+                  <Text>
+                    {formatRupiah(
+                      pageData
+                        .map((item: any) => item["partner_profit"])
+                        .reduce((acc: number, curr: number) => acc + curr, 0)
+                    )}
+                  </Text>
+                </View>
+                <View style={{ ...styles.subColumn, ...styles.summaryText }}>
+                  <Text style={styles.summaryText}>Ongoing Students</Text>
+                </View>
+                <View style={{ ...styles.subColumn, ...styles.summaryText }}>
+                  <Text>{`${String(
+                    (pageData[pageData.length - 1] as any)["active_st"]
+                  )} siswa`}</Text>
+                </View>
+                <View style={{ ...styles.subColumn, ...styles.summaryText }}>
+                  <Text style={styles.summaryText}>Cumulative Profit/Loss</Text>
+                </View>
+                <View style={{ ...styles.subColumn, ...styles.summaryText }}>
+                  <Text>
+                    {formatRupiah(
+                      (pageData[pageData.length - 1] as any)[
+                        "partner_cum_profit"
+                      ]
+                    )}
+                  </Text>
+                </View>
+              </View>
+            </View>
+          </View>
         </Page>
       ))}
 
-      {/* Page 2 with another element */}
-      <Page size="A4">
-        <View style={styles.section}>
-          <View style={styles.table}>
-            {/* Table Header */}
-            <View style={styles.row}>
-              <Text style={[styles.cell, styles.header]}>-</Text>
-              {months.map((month, index) => (
-                <Text key={index + 1} style={[styles.cell, styles.header]}>
-                  {month}
-                </Text>
-              ))}
-            </View>
-
-            {/* Table Data Rows */}
-            <View style={styles.row}>
-              <Text style={styles.cell}>Row 1, Cell 1</Text>
-              <Text style={styles.cell}>Row 1, Cell 2</Text>
-              <Text style={styles.cell}>Row 1, Cell 3</Text>
-            </View>
-            <View style={styles.row}>
-              <Text style={styles.cell}>Row 2, Cell 1</Text>
-              <Text style={styles.cell}>Row 2, Cell 2</Text>
-              <Text style={styles.cell}>Row 2, Cell 3</Text>
-            </View>
-          </View>
-        </View>
-      </Page>
       <Page size="A4" style={styles.page}>
         <View style={styles.section}>
           <Text style={{ fontSize: 24 }}>Additional Information</Text>
