@@ -487,7 +487,7 @@ const ExDocument: React.FC<MyDocumentProps> = ({
         </Page>
       ))}
 
-      <Page size="A4" style={styles.page}>
+      {/* <Page size="A4" style={styles.page}>
         <View style={styles.section}>
           <Text style={{ fontSize: 24 }}>Additional Information</Text>
           <Text>
@@ -495,7 +495,7 @@ const ExDocument: React.FC<MyDocumentProps> = ({
             include in your PDF.
           </Text>
         </View>
-      </Page>
+      </Page> */}
     </Document>
   );
 };
