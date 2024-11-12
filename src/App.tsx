@@ -99,16 +99,6 @@ function App() {
   //     contentRef:tableRef
   // });
 
-  const generatePDFLink = async () =>  {
-    if (cumProfRef.current) {
-      console.log("printing v2");
-      const canvas = await html2canvas(cumProfRef.current);
-      const imgData = canvas.toDataURL("image/png");
-      return imgData;
-    }
-    return ""
-  };
-
   const generatePDFLinks = async () => {
     const imagesData = []; // Array to store the image data
   
@@ -133,7 +123,7 @@ function App() {
       // Create a link element
       const link = document.createElement("a");
       link.href = URL.createObjectURL(pdfBlob);
-      link.download = "multi-page.pdf"; // Specify the file name
+      link.download = "Simulation.pdf"; // Specify the file name
       link.click(); // Programmatically click the link to trigger the download
     }
   };
@@ -142,9 +132,7 @@ function App() {
     const graphDataUrls = await generatePDFLinks();
     await downloadPDF(graphDataUrls);
   };
-  const requestPrint = () => {
-    setPrintRequested(true); // Set print request to true
-  };
+
   const toggleDrawer = (open: boolean) => () => {
     console.log("Tes 1");
     setToggleDrawer({ bottom: open });

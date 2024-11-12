@@ -1,5 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
+import LandingPage from "./LandingPage.tsx";
 import App from "./App.tsx";
 import "./index.css";
 // import { ThemeProvider, createTheme } from "@mui/material";
@@ -100,7 +101,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
       <CustomThemeProvider>
-        <App />
+        <LandingPage/>
       </CustomThemeProvider>
     </QueryClientProvider>
   </React.StrictMode>
