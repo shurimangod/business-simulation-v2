@@ -18,7 +18,7 @@ interface MyDocumentProps {
   graphDataUrls: Array<String>;
   tableData: MonthlySales[];
   formData: FormData;
-  totalInvestment:number;
+  totalInvestment: number;
 }
 import formatRupiah from "../utils/helper";
 import { fontStyle } from "html2canvas/dist/types/css/property-descriptors/font-style";
@@ -67,12 +67,15 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
     width: "50%", // Each main column takes half of the container
   },
+  border: {
+    border: "2px solid black",
+  },
   subColumn: {
     width: "50%", // Each sub-column takes half of the main column
     padding: 5, // Optional: adds some spacing
   },
   summaryText: {
-    fontSize: "16pt",
+    fontSize: "14pt",
   },
   smallSummaryText: {
     fontSize: "12pt",
@@ -121,6 +124,12 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     textAlign: "center",
     color: "#10AF13",
+  },
+  horizontalLine: {
+    marginVertical: 5,
+    borderBottomWidth: 1,
+    borderBottomColor: "#000",
+    borderBottomStyle: "solid",
   },
   watermark: {
     position: "absolute",
@@ -248,7 +257,7 @@ const ExDocument: React.FC<MyDocumentProps> = ({
   graphDataUrls,
   tableData,
   formData,
-  totalInvestment
+  totalInvestment,
 }) => {
   let columnExclude: string[] = [];
   if (formData.investment_type == "vp") {
@@ -317,7 +326,15 @@ const ExDocument: React.FC<MyDocumentProps> = ({
         <Image style={styles.watermark} src={imgWmSrc} />
         <Text style={styles.sectionTitle}>5 Year Simulation Summary</Text>
         <View style={styles.section}>
-          <Text style={{...styles.summaryText, textDecoration:"underline",marginBottom:5}}>Initial Investment</Text>
+          <Text
+            style={{
+              ...styles.summaryText,
+              textDecoration: "underline",
+              marginBottom: 5,
+            }}
+          >
+            Initial Investment
+          </Text>
           <View
             style={{
               ...styles.flexCol,
@@ -327,24 +344,36 @@ const ExDocument: React.FC<MyDocumentProps> = ({
           >
             <View style={styles.flexRow}>
               <Text>Venue / Ruko Rent</Text>
-              <Text>{formatRupiah(formData.ruko_rent)}</Text>
+              <Text>{formatRupiah(Math.abs(formData.ruko_rent))}</Text>
             </View>
             <View style={styles.flexRow}>
               <Text>Ruko Rennovation</Text>
-              <Text>{formatRupiah(formData.off_renov)}</Text>
+              <Text>{formatRupiah(Math.abs(formData.off_renov))}</Text>
             </View>
             <View style={styles.flexRow}>
               <Text>Office Facility</Text>
-              <Text>{formatRupiah(formData.off_facility)}</Text>
+              <Text>{formatRupiah(Math.abs(formData.off_facility))}</Text>
             </View>
             <View style={styles.flexRow}>
               <Text>Electrical, Water, Internet</Text>
-              <Text>{formatRupiah(formData.mep)}</Text>
+              <Text>{formatRupiah(Math.abs(formData.mep))}</Text>
             </View>
-            <Line></Line>
+            {formData.investment_type === "fc" && (
+              <>
+                <View style={styles.flexRow}>
+                  <Text>Teaching Materials</Text>
+                  <Text>{formatRupiah(Math.abs(formData.t_material))}</Text>
+                </View>
+                <View style={styles.flexRow}>
+                  <Text>License Fee</Text>
+                  <Text>{formatRupiah(Math.abs(formData.license_fee))}</Text>
+                </View>
+              </>
+            )}
+            <View style={styles.horizontalLine}></View>
             <View style={styles.flexRow}>
               <Text>Total Investment</Text>
-              <Text>{formatRupiah(totalInvestment)}</Text>
+              <Text>{formatRupiah(Math.abs(totalInvestment))}</Text>
             </View>
           </View>
 
@@ -391,6 +420,68 @@ const ExDocument: React.FC<MyDocumentProps> = ({
               zIndex: 1,
             }}
           />
+        </View>
+        <View style={styles.section}>
+          <View style={styles.container}>
+            <View style={styles.column}>
+              <View
+                style={{
+                  ...styles.subColumn,
+                  ...styles.summaryText,
+                  ...styles.border,
+                }}
+              >
+                <Text style={styles.summaryText}>
+                  Return of Investment Month
+                </Text>
+              </View>
+              <View
+                style={{
+                  ...styles.subColumn,
+                  ...styles.summaryText,
+                  ...styles.border,
+                }}
+              >
+                <Text style={styles.summaryText}>
+                  Month-
+                  {formData.investment_type == "vp"
+                    ? tableData.findIndex(
+                        (item) => item.profit.partner_cum_profit >= 0
+                      )
+                    : tableData.findIndex(
+                        (item) => item.profit.cum_profit >= 0
+                      )}
+                </Text>
+              </View>
+              <View
+                style={{
+                  ...styles.subColumn,
+                  ...styles.summaryText,
+                  ...styles.border,
+                }}
+              >
+                <Text style={styles.summaryText}>Return of Investment</Text>
+              </View>
+              <View
+                style={{
+                  ...styles.subColumn,
+                  ...styles.summaryText,
+                  ...styles.border,
+                }}
+              >
+                <Text style={styles.summaryText}>
+                  {formData.investment_type == "vp"
+                    ? formatRupiah(
+                        tableData[tableData.length - 1].profit
+                          .partner_cum_profit
+                      )
+                    : formatRupiah(
+                        tableData[tableData.length - 1].profit.cum_profit
+                      )}
+                </Text>
+              </View>
+            </View>
+          </View>
         </View>
       </Page>
       {pages.map((pageData, index) => (
@@ -439,12 +530,23 @@ const ExDocument: React.FC<MyDocumentProps> = ({
                 </View>
                 <View style={{ ...styles.subColumn, ...styles.summaryText }}>
                   <Text>
-                    {formatRupiah(
-                      pageData
-                        .map((item: any) => item["partner_profit"])
-                        .reduce((acc: number, curr: number) => acc + curr, 0) /
-                        pageData.length
-                    )}
+                    {formData.investment_type === "vp"
+                      ? formatRupiah(
+                          pageData
+                            .map((item: any) => item["partner_profit"])
+                            .reduce(
+                              (acc: number, curr: number) => acc + curr,
+                              0
+                            ) / pageData.length
+                        )
+                      : formatRupiah(
+                          pageData
+                            .map((item: any) => item["ord_income"])
+                            .reduce(
+                              (acc: number, curr: number) => acc + curr,
+                              0
+                            ) / pageData.length
+                        )}
                   </Text>
                 </View>
                 <View style={{ ...styles.subColumn, ...styles.summaryText }}>
@@ -454,11 +556,23 @@ const ExDocument: React.FC<MyDocumentProps> = ({
                 </View>
                 <View style={{ ...styles.subColumn, ...styles.summaryText }}>
                   <Text>
-                    {formatRupiah(
-                      pageData
-                        .map((item: any) => item["partner_profit"])
-                        .reduce((acc: number, curr: number) => acc + curr, 0)
-                    )}
+                    {formData.investment_type === "vp"
+                      ? formatRupiah(
+                          pageData
+                            .map((item: any) => item["partner_profit"])
+                            .reduce(
+                              (acc: number, curr: number) => acc + curr,
+                              0
+                            )
+                        )
+                      : formatRupiah(
+                          pageData
+                            .map((item: any) => item["ord_income"])
+                            .reduce(
+                              (acc: number, curr: number) => acc + curr,
+                              0
+                            )
+                        )}
                   </Text>
                 </View>
                 <View style={{ ...styles.subColumn, ...styles.summaryText }}>
@@ -474,11 +588,15 @@ const ExDocument: React.FC<MyDocumentProps> = ({
                 </View>
                 <View style={{ ...styles.subColumn, ...styles.summaryText }}>
                   <Text>
-                    {formatRupiah(
-                      (pageData[pageData.length - 1] as any)[
-                        "partner_cum_profit"
-                      ]
-                    )}
+                    {formData.investment_type === "vp"
+                      ? formatRupiah(
+                          (pageData[pageData.length - 1] as any)[
+                            "partner_cum_profit"
+                          ]
+                        )
+                      : formatRupiah(
+                          (pageData[pageData.length - 1] as any)["cum_profit"]
+                        )}
                   </Text>
                 </View>
               </View>

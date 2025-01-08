@@ -51,24 +51,24 @@ function App() {
   const [printRequested, setPrintRequested] = useState(false);
 
   const [formData, setFormData] = useState<{
-    ruko_rent: null | number;
-    mep: null | number;
-    off_facility: null | number;
-    t_material: null | number;
-    off_renov: null | number;
-    teaching_cost: null | number;
-    ck_cost: null | number;
-    new_st: null | number;
-    class_price: null | number;
-    ckit_price: null | number;
-    drop_rate: null | number;
-    admin_cost: null | number;
-    marketing_cost: null | number;
-    mep_monthly: null | number;
-    license_fee: null | number;
-    investment_type: null | string;
-    max_st: null | number;
-    others_cost: null | number;
+    ruko_rent: null | Number;
+    mep: null | Number;
+    off_facility: null | Number;
+    t_material: null | Number;
+    off_renov: null | Number;
+    teaching_cost: null | Number;
+    ck_cost: null | Number;
+    new_st: null | Number;
+    class_price: null | Number;
+    ckit_price: null | Number;
+    drop_rate: null | Number;
+    admin_cost: null | Number;
+    marketing_cost: null | Number;
+    mep_monthly: null | Number;
+    license_fee: null | Number;
+    investment_type: null | String;
+    max_st: null | Number;
+    others_cost: null | Number;
     // is_vp: undefined | boolean;
   }>({
     ruko_rent: null,
@@ -153,7 +153,7 @@ function App() {
       t_material: 70000000,
       teaching_cost: 75000,
       mep_monthly: 1200000,
-      license_fee: formData.investment_type != "fc" ? 0 : 100000000,
+      license_fee: formData.investment_type != "fc" ? 0 : 50000000,
       // is_vp: formData.is_vp,
       investment_type: prevData.investment_type,
       max_st: 250,
